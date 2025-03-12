@@ -30,7 +30,7 @@ export class UsersController {
     @Delete(':id')
     @Roles('admin') // Удалять может только админ
     async remove(@Param('id') id: string) {
-        return this.usersService.remove(Number(id));
+        return this.usersService.remove(id);
     }
 
     @Patch(':id')

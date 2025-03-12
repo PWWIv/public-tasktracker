@@ -7,7 +7,7 @@ import { UsersModule } from './users/users.module';
 import { SetupModule } from './setup/setup.module';
 import { UsersController } from './users/users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/user.entity';
+import { UserEntity } from './users/user.entity';
 
 @Module({
   imports: [
@@ -28,7 +28,7 @@ import { User } from './users/user.entity';
       entities: [__dirname + '/**/*.entity.{ts,js}'], // Подключение всех моделей
       synchronize: true, // ⚠️ В проде лучше false + миграции!
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([UserEntity]),
   ],
   controllers: [
     AppController,
