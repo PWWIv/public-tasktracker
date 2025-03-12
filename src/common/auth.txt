@@ -1,0 +1,20 @@
+http://localhost:3000/auth/login - Авторизация
+
+{
+  "username": "testclient",
+  "email": "testclient@example.com",
+  "password": "1234",
+  "role": "client"
+}
+
+{
+  "username": "testemployee",
+  "email": "testemployee@example.com",
+  "password": "1234",
+  "role": "employee"
+}
+
+{
+  "email": "admin@example.com",
+  "password": "admin"
+}
