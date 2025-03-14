@@ -20,11 +20,11 @@ import { UserEntity } from './users/user.entity';
     SetupModule,
     TypeOrmModule.forRoot({
       type: 'postgres', // Укажи свою БД
-      host: 'localhost',
+      host: 'db',
       port: 5432,
-      username: 'postgres',
-      password: 'yourpassword',
-      database: 'yourdatabase',
+      username: 'user',
+      password: 'password',
+      database: 'mydatabase',
       entities: [__dirname + '/**/*.entity.{ts,js}'], // Подключение всех моделей
       synchronize: true, // ⚠️ В проде лучше false + миграции!
     }),
