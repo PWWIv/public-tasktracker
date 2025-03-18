@@ -14,6 +14,9 @@ export class UserEntity {
     @Column()
     password: string;
 
+    @Column({ nullable: true })
+    encryptedPassword: string;
+
     @Column()
     role: string;
 }

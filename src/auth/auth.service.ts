@@ -1,34 +1,35 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+// src/auth/auth.service.ts
+import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
+import * as bcrypt from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
     constructor(
-        private jwtService: JwtService,
-        private usersService: UsersService,
-    ) { }
+        private readonly usersService: UsersService,
+        private readonly jwtService: JwtService, // внедряем JwtService
+    ) {}
 
-    // Пример проверки учётных данных (заглушка)
-    async validateUser(email: string, pass: string): Promise<any> {
-        console.log('validateUser called with:', email, pass);
+    async validateUser(email: string, password: string): Promise<any> {
         const user = await this.usersService.findByEmail(email);
-        console.log('Found user:', user);
         if (!user) {
             return null;
         }
-        if (user.password !== pass) {
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
             return null;
         }
-        return { userId: user.id, email: user.email, role: user.role };
+        const { password: _, ...result } = user;
+        return result;
     }
 
-    // Метод, который выдаёт токен на основе данных пользователя
     async login(user: any) {
-        // Обычно payload содержит userId, роли и т.п.
-        const payload = { email: user.email, sub: user.userId, role: user.role };
-        return {
-            access_token: this.jwtService.sign(payload),
+        const payload = { 
+            userId: user.id,
+            email: user.email,
+            role: user.role 
         };
+        return { access_token: this.jwtService.sign(payload) };
     }
 }

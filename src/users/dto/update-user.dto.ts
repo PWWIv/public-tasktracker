@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsEmail, IsString } from 'class-validator';
+import { IsNotEmpty, IsEmail, IsString, IsBoolean, IsOptional } from 'class-validator';
 
 export class UpdateUserDto {
     @ApiProperty({ example: 'John Doe', description: 'Имя пользователя' })
@@ -14,11 +14,21 @@ export class UpdateUserDto {
 
     @ApiProperty({ example: 'password123', description: 'Пароль пользователя' })
     @IsString({ message: 'Пароль должен быть строкой' })
-    @IsNotEmpty({ message: 'Пароль не должен быть пустым' })
-    password: string;
+    @IsOptional()
+    password?: string;
 
     @ApiProperty({ example: 'admin', description: 'Роль пользователя' })
     @IsString({ message: 'Роль должна быть строкой' })
     @IsNotEmpty({ message: 'Роль не должна быть пустой' })
     role?: 'admin' | 'employee' | 'client';
+
+    @ApiProperty({ example: false, description: 'Флаг зашифрованного пароля' })
+    @IsBoolean({ message: 'Флаг isEncrypted должен быть булевым значением' })
+    @IsOptional()
+    isEncrypted?: boolean;
+
+    @ApiProperty({ example: 'encrypted_password', description: 'Зашифрованный пароль' })
+    @IsString({ message: 'Зашифрованный пароль должен быть строкой' })
+    @IsOptional()
+    encryptedPassword?: string;
 }

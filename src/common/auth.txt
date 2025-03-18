@@ -18,3 +18,60 @@ http://localhost:3000/auth/login - Авторизация
   "email": "admin@example.com",
   "password": "admin"
 }
+
+{
+  "id": "67598dee-4676-47eb-b38a-42fefaf65013",
+  "username": "John Doe",
+  "email": "john@example.com",
+  "password": "$2b$10$k5gx2u3669Zg9vyCNFaCfOPOswTZnec6BNC25rbAHferTiM6UF7ta",
+  "role": "admin"
+}
+
+{
+    "id": "98aa35cc-d16e-46e1-a363-290e3df9a066",
+    "username": "John Doe 2",
+    "email": "john2@example.com",
+    "password": "$2b$10$OBLBsFQhuWtXMO5x7CvwFOX80GYFDkxeNwmZdaUBKszPWZNhrAHDS",
+    "role": "admin"
+}
+
+{
+  "username": "John Doe 2",
+  "email": "john2@example.com",
+  "password": "JohnDoePassword2",
+  "role": "admin"
+}
+
+{username: "john doegh", email: "john3@example.com", password: "JohnDoePassword2", role: "employee"}
+email
+: 
+"john3@example.com"
+password
+: 
+"JohnDoePassword2"
+role
+: 
+"employee"
+username
+: 
+"john doegh"
+
+{id: "d9fcc304-9e16-4e9b-84af-3d5772bcead4", username: "john deere3123132",…}
+email
+: 
+"john31231312313@example.com"
+encryptedPassword
+: 
+"36408a1dcfbaa429c195e25895d0b81cb365148bb982921f49f878b10b4ed372"
+id
+: 
+"d9fcc304-9e16-4e9b-84af-3d5772bcead4"
+password
+: 
+"$2b$10$0lFmueeq70D1AF6DpwZL.OClvsPWgCvcg1GHwl00Op2KMEK1VlFgC"
+role
+: 
+"admin"
+username
+: 
+"john deere3123132"

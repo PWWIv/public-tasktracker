@@ -2,8 +2,11 @@ import { Controller, Post, Delete, Put, Param, Get, Patch, Body, UseGuards, Requ
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { DecryptPasswordDto } from './dto/decrypt-password.dto';
+import { EncryptedPasswordDto } from './dto/encrypted-password.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles.guard';
+import { ReAuthGuard } from 'src/common/guards/re-auth.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UserEntity } from './user.entity';
@@ -25,8 +28,7 @@ export class UsersController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('admin', 'employee')
     async create(@Request() req, @Body() createUserDto: CreateUserDto) {
-        const creatorRole = req.user.role; // роль того, кто создаёт пользователя
-        // Если создатель — сотрудник, разрешаем создавать только клиента
+        const creatorRole = req.user.role;
         if (creatorRole === 'employee' && createUserDto.role !== 'client') {
             throw new UnauthorizedException('Сотрудник может создавать только пользователей с ролью клиент');
         }
@@ -47,6 +49,18 @@ export class UsersController {
     @ApiOperation({ summary: 'Получение списка всех пользователей' })
     @ApiResponse({ status: 200, description: 'Список пользователей успешно получен' })
     @ApiResponse({ status: 401, description: 'Неавторизованный доступ' })
+    @UseGuards(JwtAuthGuard)
+    @Roles('admin', 'employee')
+    async findAll(): Promise<UserEntity[]> {
+        return this.usersService.findAll();
+    }
+
+    @Get(':id')
+    @ApiOperation({ summary: 'Получение пользователя по ID' })
+    @ApiResponse({ status: 200, description: 'Пользователь успешно получен' })
+    @ApiResponse({ status: 401, description: 'Неавторизованный доступ' })
+    @UseGuards(JwtAuthGuard)
+    @Roles('admin', 'employee')
     async findOne(@Param('id') id: string): Promise<UserEntity> {
         return this.usersService.findOne(id);
     }
@@ -58,5 +72,18 @@ export class UsersController {
     @Roles('admin') // Удалять может только админ
     async remove(@Param('id') id: string) {
         return this.usersService.remove(id);
+    }
+
+    @Post(':id/decrypt-password')
+    @ApiOperation({ summary: 'Получение зашифрованного пароля пользователя' })
+    @ApiResponse({ status: 200, description: 'Зашифрованный пароль успешно получен' })
+    @ApiResponse({ status: 401, description: 'Неавторизованный доступ или неверный пароль' })
+    @UseGuards(JwtAuthGuard, RolesGuard, ReAuthGuard)
+    @Roles('admin')
+    async getEncryptedPassword(
+        @Param('id') id: string,
+        @Body() decryptPasswordDto: DecryptPasswordDto
+    ): Promise<EncryptedPasswordDto> {
+        return this.usersService.getEncryptedPassword(id);
     }
 }

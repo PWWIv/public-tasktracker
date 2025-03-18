@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserEntity } from './user.entity';
+import { EncryptedPasswordDto } from './dto/encrypted-password.dto';
 import * as bcrypt from 'bcryptjs';
 
 @Injectable()
@@ -29,9 +30,16 @@ export class UsersService {
     }
 
     async create(createUserDto: CreateUserDto): Promise<UserEntity> {
-        // Хэширование пароля
-        const hashedPassword = await bcrypt.hash(createUserDto.password, 10); // 10 — количество раундов соли
-        const userData = { ...createUserDto, password: hashedPassword };
+        // Хэшируем пароль для авторизации
+        const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+
+        const userData = { 
+            ...createUserDto, 
+            password: hashedPassword,
+            // Используем уже зашифрованный пароль от фронтенда
+            encryptedPassword: createUserDto.encryptedPassword
+        };
+        
         const newUser = this.userRepository.create(userData);
         return await this.userRepository.save(newUser);
     }
@@ -45,15 +53,32 @@ export class UsersService {
     }
 
     async update(id: string, updateUserDto: Partial<CreateUserDto>) {
-        // Если обновляется пароль, его тоже нужно захэшировать
+        // Если обновляется пароль
         if (updateUserDto.password) {
+            // Хэшируем пароль для авторизации
             updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+            // Используем уже зашифрованный пароль от фронтенда
+            updateUserDto.encryptedPassword = updateUserDto.encryptedPassword;
         }
+
         await this.userRepository.update(id, updateUserDto);
         const updatedUser = await this.userRepository.findOne({ where: { id } });
         if (!updatedUser) {
             throw new NotFoundException('Пользователь не найден');
         }
         return updatedUser;
+    }
+
+    async findAll(): Promise<UserEntity[]> {
+        return this.userRepository.find();
+    }
+
+    async getEncryptedPassword(id: string): Promise<EncryptedPasswordDto> {
+        const user = await this.findOne(id);
+        if (!user.encryptedPassword) {
+            throw new NotFoundException('Зашифрованный пароль не найден');
+        }
+        // Возвращаем зашифрованный пароль как есть
+        return { password: user.encryptedPassword };
     }
 }

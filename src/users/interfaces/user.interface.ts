@@ -1,6 +1,6 @@
 export interface User {
-    username: string;
     id: string;
+    username: string;    
     email: string;
     password: string;
     role: 'admin' | 'employee' | 'client';
