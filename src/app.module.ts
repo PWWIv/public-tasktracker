@@ -8,6 +8,8 @@ import { SetupModule } from './setup/setup.module';
 import { UsersController } from './users/users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './users/user.entity';
+import { ClientsModule } from './clients/clients.module';
+import { ProjectsModule } from './projects/projects.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { UserEntity } from './users/user.entity';
     AuthModule,
     UsersModule,
     SetupModule,
+    ClientsModule,
+    ProjectsModule,
     TypeOrmModule.forRoot({
       type: 'postgres', // Укажи свою БД
       host: 'db',

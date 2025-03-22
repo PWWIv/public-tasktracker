@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import { ClientEntity } from '../clients/client.entity';
 
 @Entity()
 export class UserEntity {
@@ -19,4 +20,7 @@ export class UserEntity {
 
     @Column()
     role: string;
+
+    @OneToOne(() => ClientEntity, client => client.user)
+    client: ClientEntity;
 }

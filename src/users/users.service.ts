@@ -44,14 +44,6 @@ export class UsersService {
         return await this.userRepository.save(newUser);
     }
 
-    async remove(id: string) {
-        const result = await this.userRepository.delete(id);
-        if (result.affected === 0) {
-            throw new NotFoundException('Пользователь не найден');
-        }
-        return { message: 'Пользователь удален' };
-    }
-
     async update(id: string, updateUserDto: Partial<CreateUserDto>) {
         // Если обновляется пароль
         if (updateUserDto.password) {
@@ -71,6 +63,11 @@ export class UsersService {
 
     async findAll(): Promise<UserEntity[]> {
         return this.userRepository.find();
+    }
+
+    async remove(id: string): Promise<void> {
+        const user = await this.findOne(id);
+        await this.userRepository.remove(user);
     }
 
     async getEncryptedPassword(id: string): Promise<EncryptedPasswordDto> {

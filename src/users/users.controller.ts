@@ -25,17 +25,12 @@ export class UsersController {
     @ApiOperation({ summary: 'Создание нового пользователя' })
     @ApiResponse({ status: 201, description: 'Пользователь успешно создан' })
     @ApiResponse({ status: 401, description: 'Неавторизованный доступ' })
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('admin', 'employee')
-    async create(@Request() req, @Body() createUserDto: CreateUserDto) {
-        const creatorRole = req.user.role;
-        if (creatorRole === 'employee' && createUserDto.role !== 'client') {
-            throw new UnauthorizedException('Сотрудник может создавать только пользователей с ролью клиент');
-        }
+    @UseGuards(JwtAuthGuard)
+    @Roles('admin')
+    async create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
         return this.usersService.create(createUserDto);
     }
 
-    
     @Patch(':id')
     @ApiOperation({ summary: 'Обновление пользователя' })
     @ApiResponse({ status: 200, description: 'Пользователь успешно обновлен' })
